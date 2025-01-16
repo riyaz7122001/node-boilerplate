@@ -12,7 +12,7 @@ import { NextFunction, Response } from "express"
 import moment from "moment";
 
 
-const CreateStaffUser = async (req: RequestWithPayload<CreateStaffUserPayload & ProtectedPayload>, res: Response, next: NextFunction) => {
+const CreateUser = async (req: RequestWithPayload<CreateStaffUserPayload & ProtectedPayload>, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const { firstName, lastName, email, phone, roleId } = req.body;
@@ -21,7 +21,7 @@ const CreateStaffUser = async (req: RequestWithPayload<CreateStaffUserPayload & 
         const user = await createUser(userId, email, roleId, null, firstName, lastName, phone, transaction);
 
         const emailToken = await generateRefreshToken(30);
-        const content = await getEmailTemplate('set-password', transaction)
+        const content = await getEmailTemplate('reset-password', transaction)
         if (!content) {
             throw new Error('set-password - Email template not found')
         }
@@ -39,8 +39,6 @@ const CreateStaffUser = async (req: RequestWithPayload<CreateStaffUserPayload & 
 
         await transaction.commit();
 
-
-
         sendResponse(res, 201, 'User created successfully');
     } catch (error) {
         await transaction.rollback();
@@ -48,7 +46,7 @@ const CreateStaffUser = async (req: RequestWithPayload<CreateStaffUserPayload & 
     }
 }
 
-const EditStaffUser = async (req: RequestWithPayload<CreateStaffUserPayload & ProtectedPayload>, res: Response, next: NextFunction) => {
+const EditUser = async (req: RequestWithPayload<CreateStaffUserPayload & ProtectedPayload>, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const id = req.params.id;
@@ -67,7 +65,7 @@ const EditStaffUser = async (req: RequestWithPayload<CreateStaffUserPayload & Pr
     }
 }
 
-const DeleteStaffUser = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
+const DeleteUser = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const id = req.params.id;
@@ -85,7 +83,7 @@ const DeleteStaffUser = async (req: RequestWithPayload<ProtectedPayload>, res: R
     }
 }
 
-const ChangeStaffUserActivation = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
+const ChangeUserActivation = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const id = req.params!.id;
@@ -105,7 +103,7 @@ const ChangeStaffUserActivation = async (req: RequestWithPayload<ProtectedPayloa
     }
 }
 
-const GetStaffUserDetails = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
+const GetUserDetails = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const id = req.params!.id;
@@ -125,7 +123,7 @@ const GetStaffUserDetails = async (req: RequestWithPayload<ProtectedPayload>, re
     }
 }
 
-const GetStaffUserList = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
+const GetUserList = async (req: RequestWithPayload<ProtectedPayload>, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const { size, page, search, sortKey, sortDir } = req.query;
@@ -143,10 +141,10 @@ const GetStaffUserList = async (req: RequestWithPayload<ProtectedPayload>, res: 
 }
 
 export {
-    CreateStaffUser,
-    EditStaffUser,
-    DeleteStaffUser,
-    ChangeStaffUserActivation,
-    GetStaffUserDetails,
-    GetStaffUserList
+    CreateUser,
+    EditUser,
+    DeleteUser,
+    ChangeUserActivation,
+    GetUserDetails,
+    GetUserList
 }

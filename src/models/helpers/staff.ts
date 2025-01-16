@@ -1,3 +1,4 @@
+import roles from "@models/role";
 import user from "../../models/user";
 import { Allows } from "../../types/staff";
 import { userRoles } from "../../types/utility";
@@ -150,6 +151,15 @@ const changeUserActivation = async (userId: string, isActive: boolean, updatedBy
     });
 }
 
+const getRoleById = async (roleId: number, transaction: Transaction) => {
+    const role = await roles.findOne({
+        attributes: ['role'],
+        where: { id: roleId },
+        transaction
+    });
+    return role;
+}
+
 export {
     getUserByEmail,
     getUserByPhone,
@@ -160,4 +170,5 @@ export {
     getUserDetails,
     getUserList,
     changeUserActivation,
+    getRoleById
 }

@@ -141,7 +141,7 @@ const SetPassword = async (req: RequestWithPayload<ResetPasswordPayload>, res: R
     const { emailToken, password } = req.body;
     const { userId } = req.payload!;
 
-    await useEmailToken(userId, emailToken, "reset-password", transaction);
+    await useEmailToken(userId, emailToken, "set-password", transaction);
 
     const hashedPassword = await hashPassword(password);
     await updatePassword(userId, hashedPassword, transaction);

@@ -22,8 +22,8 @@ const CreateStaffValidationRules = () => {
             .normalizeEmail()
             .trim(),
         body('phone')
-            .not().isEmpty().withMessage('Password is required').bail()
-            .isString().withMessage('Password must be of type String').bail()
+            .not().isEmpty().withMessage('Phone is required').bail()
+            .isString().withMessage('Phone must be of type String').bail()
             .matches(/^\d{10}$/).withMessage('Provide a valid mobile number')
             .trim(),
         body('roleId')
@@ -56,8 +56,8 @@ const EditStaffValidationRules = () => {
             .normalizeEmail()
             .trim(),
         body('phone')
-            .not().isEmpty().withMessage('Password is required').bail()
-            .isString().withMessage('Password must be of type String').bail()
+            .not().isEmpty().withMessage('Phone is required').bail()
+            .isString().withMessage('Phone must be of type String').bail()
             .matches(/^\d{10}$/).withMessage('Provide a valid mobile number')
             .trim(),
         body('roleId')

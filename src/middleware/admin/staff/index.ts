@@ -1,9 +1,9 @@
-import { getUserByEmail, getUserById, getUserByPhone } from "../../../models/helpers/staff";
+import { getRoleById, getUserByEmail, getUserById, getUserByPhone } from "../../../models/helpers/staff";
 import { WithTransaction } from "../../../types/utility";
 import { sendResponse } from "../../../utility/api";
 import { NextFunction, Response } from "express";
 
-const ValidateCreateStaff = async (req: WithTransaction, res: Response, next: NextFunction) => {
+const ValidateCreateUser = async (req: WithTransaction, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const { email, phone } = req.body;
@@ -27,7 +27,7 @@ const ValidateCreateStaff = async (req: WithTransaction, res: Response, next: Ne
     }
 }
 
-const ValidateEditStaff = async (req: WithTransaction, res: Response, next: NextFunction) => {
+const ValidateEditUser = async (req: WithTransaction, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const { email, phone } = req.body;
@@ -53,7 +53,7 @@ const ValidateEditStaff = async (req: WithTransaction, res: Response, next: Next
 }
 
 
-const ValidateStaffUserId = async (req: WithTransaction, res: Response, next: NextFunction) => {
+const ValidateUserId = async (req: WithTransaction, res: Response, next: NextFunction) => {
     const transaction = req.transaction!;
     try {
         const id = req.params.id;
@@ -71,9 +71,25 @@ const ValidateStaffUserId = async (req: WithTransaction, res: Response, next: Ne
     }
 }
 
-export {
-    ValidateCreateStaff,
-    ValidateStaffUserId,
-    ValidateEditStaff,
+const ValidateRoleById = async (req: WithTransaction, res: Response, next: NextFunction) => {
+    const transaction = req.transaction!;
+    try {
+        const roleId = req.body.roleId;
+        const role = await getRoleById(roleId, transaction);
+        if (!role) {
+            await transaction.rollback();
+            return sendResponse(res, 404, 'Role not found');
+        }
+        next();
+    } catch (error) {
+        await transaction.rollback();
+        return sendResponse(res, 500, 'Error while validating role id');
+    }
+}
 
+export {
+    ValidateCreateUser,
+    ValidateUserId,
+    ValidateEditUser,
+    ValidateRoleById
 }
