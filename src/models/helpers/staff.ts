@@ -92,9 +92,9 @@ const getUserById = async (userId: string, deleted: boolean, transaction: Transa
     return data;
 }
 
-const getUserDetails = async (type: userRoles, userId: string, transaction: Transaction) => {
+const getUserDetails = async (userId: string, transaction: Transaction) => {
     const data = await user.findOne({
-        attributes: ['email', 'firstName', 'lastName', 'phone'],
+        attributes: ['id', 'email', 'activationStatus', 'firstName', 'lastName', 'phone'],
         where: {
             id: userId,
             isDeleted: false
@@ -104,7 +104,7 @@ const getUserDetails = async (type: userRoles, userId: string, transaction: Tran
     return data;
 }
 
-const getUserList = async (type: userRoles, limit: number, offset: number, sortKey: string | null, sortDir: 'ASC' | 'DESC' | null, search: string | null, transaction: Transaction) => {
+const getUserList = async (limit: number, offset: number, sortKey: string | null, sortDir: 'ASC' | 'DESC' | null, search: string | null, transaction: Transaction) => {
     const searchCondition = search ? {
         [Op.or]: [
             { phone: { [Op.like]: `%${search}%` } },
@@ -124,7 +124,7 @@ const getUserList = async (type: userRoles, limit: number, offset: number, sortK
     const sortOrder = sortColumn ? [[sortColumn, sortDir || 'DESC']] : [['createdOn', 'DESC']];
 
     const list = await user.findAndCountAll({
-        attributes: ['id', 'email', 'activationStatus'],
+        attributes: ['id', 'email', 'activationStatus', 'firstName', 'lastName', 'phone'],
         where: {
             isDeleted: false,
             ...searchCondition,

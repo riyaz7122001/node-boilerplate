@@ -21,7 +21,7 @@ const CreateUser = async (req: RequestWithPayload<CreateStaffUserPayload & Prote
         const user = await createUser(userId, email, roleId, null, firstName, lastName, phone, transaction);
 
         const emailToken = await generateRefreshToken(30);
-        const content = await getEmailTemplate('reset-password', transaction)
+        const content = await getEmailTemplate('set-password', transaction)
         if (!content) {
             throw new Error('set-password - Email template not found')
         }
@@ -51,7 +51,7 @@ const EditUser = async (req: RequestWithPayload<CreateStaffUserPayload & Protect
     try {
         const id = req.params.id;
 
-        const { firstName, lastName, email, phone } = req.body;
+        const { firstName, lastName, email, phone, roleId } = req.body;
         const userId = req.payload!.userId;
 
         await editUser(userId, email, firstName, lastName, phone, transaction);
@@ -108,7 +108,7 @@ const GetUserDetails = async (req: RequestWithPayload<ProtectedPayload>, res: Re
     try {
         const id = req.params!.id;
 
-        const details = await getUserDetails('admin', id, transaction);
+        const details = await getUserDetails(id, transaction);
         if (!details) {
             await transaction.rollback();
             return sendResponse(res, 404, 'User not found');
@@ -129,7 +129,7 @@ const GetUserList = async (req: RequestWithPayload<ProtectedPayload>, res: Respo
         const { size, page, search, sortKey, sortDir } = req.query;
         const offset = Number(size) * (Number(page) - 1);
 
-        const list = await getUserList("admin", Number(size), offset, sortKey ? String(sortKey) : null, sortDir as 'ASC' | 'DESC' | null, search ? String(search) : null, transaction);
+        const list = await getUserList(Number(size), offset, sortKey ? String(sortKey) : null, sortDir as 'ASC' | 'DESC' | null, search ? String(search) : null, transaction);
 
         await transaction.commit();
 
